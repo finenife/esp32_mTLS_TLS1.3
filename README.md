@@ -87,7 +87,7 @@ WantedBy=multi-user.target
       ssl_certificate_key /etc/ssl/private/intermediate/server.key.pem;
       ssl_client_certificate /etc/ssl/certs/intermediate/ca-chain.cert.pem;
 ```
-11. A SSL/TLS coniguration, SSL is used by nginx, but rest assured, it is TLs `Raspberrypi: /etc/nginx/snippets/ssl-params.conf`
+11. A SSL/TLS configuration, SSL is used by nginx, but rest assured, it is TLS v1.3 `Raspberrypi: /etc/nginx/snippets/ssl-params.conf`
     - This was taken from [cipherlist.eu](https://cipherlist.eu/)
     - This only allows TLS1.3 connections, and oly offers EECDH+AESGCM:EDH+AESGCM ciphers. 
 ```
@@ -111,7 +111,6 @@ WantedBy=multi-user.target
       add_header X-Content-Type-Options nosniff;
       add_header X-XSS-Protection "1; mode=block";
 ```
-------------------------------------------------------------
 12. a nginx systemd service - `Git:raspberrypi/nginx/nginx.service`-> `Raspberrypi: /lib/systemd/system/nginx.service`
 ```
 # Stop dance for nginx
