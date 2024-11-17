@@ -1,0 +1,12 @@
+[Unit]
+Description=uWSGI instance to serve myproject
+After=network.target
+
+[Service]
+ProtectHome=false
+WorkingDirectory=/home/hayden/nginx
+Environment="PATH=/home/hayden/nginx/myprojectenv/bin"
+ExecStart=/home/hayden/nginx/myprojectenv/bin/uwsgi --ini myproject.ini
+
+[Install]
+WantedBy=multi-user.target

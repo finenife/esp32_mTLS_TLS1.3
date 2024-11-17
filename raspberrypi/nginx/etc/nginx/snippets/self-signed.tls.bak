@@ -1,0 +1,3 @@
+ssl_certificate /etc/ssl/certs/cert.pem;
+ssl_certificate_key /etc/ssl/private/key.pem;
+ssl_client_certificate /etc/ssl/certs/cert.pem;

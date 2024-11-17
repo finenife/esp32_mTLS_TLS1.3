@@ -1,0 +1,20 @@
+server {
+    listen 443 ssl;
+    include snippets/self-signed.conf;
+    include snippets/ssl-params.conf;
+
+    location / {
+#        if ($ssl_client_verify != SUCCESS){
+ #             return 403 'blocked access to mTLS-protected resource';
+  #      }
+        include uwsgi_params;
+        uwsgi_pass unix:/home/hayden/nginx/myproject.sock;
+    }
+}
+
+server {
+    listen 80;
+
+    return 302 https://192.168.1.175;
+
+}
