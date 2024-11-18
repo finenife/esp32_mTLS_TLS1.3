@@ -89,7 +89,7 @@ WantedBy=multi-user.target
 ```
 11. A SSL/TLS configuration, SSL is used by nginx, but rest assured, it is TLS v1.3 `Raspberrypi: /etc/nginx/snippets/ssl-params.conf`
     - This was taken from [cipherlist.eu](https://cipherlist.eu/)
-    - This only allows TLS1.3 connections, and oly offers EECDH+AESGCM:EDH+AESGCM ciphers. 
+    - This only allows TLS1.3 connections, and only offers EECDH+AESGCM:EDH+AESGCM ciphers. 
 ```
       ssl_protocols TLSv1.3;
       ssl_prefer_server_ciphers on;
