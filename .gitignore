@@ -38,3 +38,7 @@ raspberrypi/nginx/etc/nginx/dhparam.pem
 *.pem
 *.p12
 esp_32/http_request/main/clientkey_password
+/Hardware/Expansion Board/ramn_telematics/ramn_telematics-backups
+Hardware/Expansion Board/ramn_telematics/~ramn_telematics.kicad_sch.lck
+Hardware/Expansion Board/ramn_telematics/fp-info-cache
+Hardware/Expansion Board/ramn_telematics/\#auto_saved_files\#
