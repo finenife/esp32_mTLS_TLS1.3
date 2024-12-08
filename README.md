@@ -2,8 +2,50 @@
 This document outlines the steps to set up an mTLS server connection using an ESP32 and Flask on a Raspberry Pi.
 I'm using this repo to house some code for version control
 
+# TODO Items 
+1. Setup a admin process (base firmware image, admin UI with pyqt or similar) to enable PKI which potential use of to allow initial device certificate flashing for mTLS. 
+    - Need a baseline firmware image that is expecting a connection to the Admin EXE, likely will need some symmetric encryption key burned into OTP (probably non-unique for simplicity, gotta have simplicity somewhere) 
+    - I may end up building a small python QT application to allow an admin to login and provision the devices. Need to build an Admin EXE to allow a admin to setup the devices
+    - Need to initialize an OIDC to be able to have an admin account that can be logged into (Keycloak)
+    - Need to potentially consider using a container like EJBCA to handle PKI, maybe.
 
-## Dependencies: 
+2. Setup a user front end. 
+    - Registration
+    - Avatar
+    - Login
+    - Preferences
+    - Device Registration
+    - Leaderboard etc. 
+
+# Current Architecture 
+## Device Hardware
+1. Test Hardware ESP32-S3-WROOM-1U w/ externally attached wi-fi antenna.
+2. Intention is to eventually develop a hardware module to integrate with [RAMN Project](https://github.com/ToyotaInfoTech/RAMN)
+
+
+## Server Frontend 
+1. User Frontend needs to be built...intending to build using Vue 3 framework. 
+
+
+## Server Backend 
+1. Ingress is handled by NGINX
+2. Certificates are manually managed, issued, and signed currently using openssl as described below. 
+3. Requests are currently all expected to be mTLS using a client certificate that is provisioned manually. 
+4. Flask and uWSGI serve the backend. 
+5. Sessions will be managed by Keycloak (self-hosted OIDC)
+6. DB for keycloak and for flask will be 2 separate postgresql instances. 
+
+## Potentially Helpful references
+1. [Creating Server-side TLS certificates](https://jamielinux.com/docs/openssl-certificate-authority/create-the-root-pair.html)
+2. [cipherlist.eu](https://cipherlist.eu/)
+3. [Flask Flask guide](https://flask.palletsprojects.com/en/stable/)
+4. [Vue QuickStart - Youtube Crash Course](https://youtu.be/1GNsWa_EZdw?si=PMYvQut2OosCF0Lm)
+5. [Vue Flask Integration - Youtube Guide](https://youtu.be/lenV5aVOMp8?si=ouftit2TZEqHxVY5)
+6. [EJBCA](https://www.ejbca.org/case/start-ejbca-docker-container-production-like-settings/)
+7. [Keycloak](https://www.keycloak.org/server/containers)
+8. [PostgreSQL](https://hub.docker.com/_/postgres)
+
+## Current Building Dependencies to get mTLS requests to work from ESP32 to RPi: 
 1. Another server to hit on local network (I used a raspberry pi 5 running latest pios lite)
 2. Self-signed Certificate creation: completed using this guide:  https://jamielinux.com/docs/openssl-certificate-authority/create-the-root-pair.html
     - These certificates will ultimately be stored in a place where nginx and tests can access them. 
