@@ -9,8 +9,9 @@
         </div>
         <div class="flex-1 flex flex-col overflow-y-auto bg-gray-800">
           <nav class="flex-1 px-2 py-4 space-y-1">
-            <button @click="currentComponent = 'dashboard'" class="flex items-center px-2 py-2 text-sm font-medium text-white rounded-md hover:bg-gray-700">
+            <button @click="currentComponent = 'dashboard'" class="relative flex items-center px-2 py-2 text-sm font-medium text-white rounded-md hover:bg-gray-700">
               Dashboard
+              <div class="absolute -center -right-5 w-5 h-5 bg-red-500 rounded-full text-center">10</div>
             </button>
             <button @click="currentComponent = 'friends'" class="flex items-center px-2 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white">
               Friends

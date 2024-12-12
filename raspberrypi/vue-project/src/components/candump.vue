@@ -37,27 +37,49 @@
           </div>
         </div>
         
-        <!-- Add more metric cards here -->
-         <!-- New historical graph -->
-
+        <!-- Add more devive details here here -->
+          <div class="bg-black p-4 rounded-lg shadow-lg">
+            <h2 class="text-xl text-white font-bold mb-4">Device Command Interface</h2>
+            <div class="flex items-center">
+              <span class="text-green-500 mr-2">$</span>
+                <input
+                  type="text"
+                  v-model="inputText"
+                  @keyup.enter="handleEnter"
+                  class="bg-transparent text-white w-full focus:outline-none font-mono"
+                  placeholder="Type your command..."
+                />
+            </div>
+           </div>
+          <div class="bg-black p-4 rounded-lg shadow-lg">
+            <h2 class="text-xl text-white font-bold mb-4">Output</h2>
+             <div class="bg-transparent text-white w-full focus:outline-none font-mono overflow-y-auto h-96">
+              <div v-for="(message, index) in canMessages" :key="index" class="mb-1">
+                {{ formatMessage(message) }}
+              </div>
+            </div>
+          </div>
       </div>
     </div>
 </div>
   
-  <div class="bg-gray-100 p-4 rounded-lg shadow">
-    <h2 class="text-xl font-bold mb-4">CAN Bus Data (Mock)</h2>
-    <div class="font-mono text-sm overflow-y-auto h-96">
-      <div v-for="(message, index) in canMessages" :key="index" class="mb-1">
-        {{ formatMessage(message) }}
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue';
 
 export default {
+    data() {
+    return {
+      inputText: ''
+    }
+  },
+  methods: {
+    handleEnter() {
+      console.log('Command entered:', this.inputText)
+      this.inputText = ''
+    }
+  },
   setup() {
     const canMessages = ref([]);
 
