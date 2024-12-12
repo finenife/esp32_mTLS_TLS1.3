@@ -35,7 +35,7 @@
             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
           </svg>
         </button>
-        <div v-if="showCertDropdown" class="origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg bg-white ring=1 ring-black ring-opacity-5 focus:outline-none z-20">
+        <div v-if="showCertDropdown" class="origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-20">
           <div class='py-1' role='menu' aria-orientation='vertical' aria-labelledby='options-menu'>
             <button v-for='cert in intermediateCertificates' :key='cert.id' @click.prevent='selectCertificate(cert)' class='block w-full text-left px-4 py-2 text-sm text-gray700 hover:bg-gray100 hover:text-gray900' role='menuitem'>
               {{ cert.name }}
@@ -56,7 +56,7 @@
           </svg>
         </button>
         <div v-if='showAlgoDropdown' class='origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-20'>
-          <div class='py-11' role='menu' aria-orientation='vertical' aria-labelledby='options-menu'>
+          <div class='py-1' role='menu' aria-orientation='vertical' aria-labelledby='options-menu'>
             <button v-for='algo in signingAlgorithms' :key='algo' @click.prevent='selectAlgorithm(algo)' class='block w-full text-left px-4 py-2 text-sm text-gray700 hover:bg-gray100 hover:text-gray900' role='menuitem'>
               {{ algo }}
             </button>
