@@ -66,3 +66,4 @@ Hardware/Expansion Board/ramn_telematics/ramn_telematics-B_Mask.gbr
 Hardware/Expansion Board/ramn_telematics/ramn_telematics-B_Cu.zip
 Hardware/Expansion Board/ramn_telematics/ramn_telematics-B_Cu.gbr
 Hardware/Expansion Board/ramn_telematics/ramn_telematics.kicad_prl
+/raspberrypi/flask/__pycache__

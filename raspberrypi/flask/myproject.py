@@ -1,12 +1,26 @@
 import os
+import time
 import requests
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from authlib.integrations.flask_client import OAuth
+from cachetools import TTLCache
+from functools import wraps
 from dotenv import load_dotenv
 import jwt
+
 load_dotenv()
 
+def measure_execution_time(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.perf_counter()  # Start timer
+        result = func(*args, **kwargs)     # Call the original function
+        end_time = time.perf_counter()      # End timer
+        execution_time = end_time - start_time
+        print(f"Function '{func.__name__}' took {execution_time:.4f} seconds to execute")
+        return result
+    return wrapper
 
 app = Flask(__name__)
 CORS(app)
@@ -34,13 +48,24 @@ oauth.register(
     client_kwargs={'scope': 'openid profile email'},
 )
 
-def get_jwks():
-    """Fetch the JWKS from Keycloak."""
-    jwks_url = f'http://{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("REALM")}/protocol/openid-connect/certs'
-    print(jwks_url)
-    response = requests.get(jwks_url)
-    response.raise_for_status()  # Raise an error for bad responses
-    return response.json()['keys']
+# define a cache for speeding up JWK handling to reduce retrieval
+jwk_cache = TTLCache(maxsize=100, ttl=3600) # cache for 1 hour
+
+def get_jwks(kid):
+    
+    if kid in jwk_cache:
+        print("using cached keys")
+        return jwk_cache[kid]
+    else:
+        """Fetch the JWKS from Keycloak."""
+        jwks_url = f'http://{os.getenv("KEYCLOAK_URL")}/realms/{os.getenv("REALM")}/protocol/openid-connect/certs'
+        #print(jwks_url)
+        response = requests.get(jwks_url)
+        response.raise_for_status()  # Raise an error for bad responses
+        jwks = response.json()
+        for key in jwks['keys']:
+            jwk_cache[key['kid']] = key # Cache each JWK
+        return jwk_cache.get(kid)
 
 # Function to convert JWK to PEM format
 def jwk_to_pem(jwk):
@@ -65,15 +90,17 @@ def jwk_to_pem(jwk):
 
 def verify_jwt(token):
     try:
+        header = jwt.get_unverified_header(token)
+        kid = header.get('kid')
+        #print("Key ID (kid):", kid)
+        
         # Get public keys from Keycloak
-        jwks = get_jwks()
+        key = get_jwks(kid)
         
         # Loop through keys to find the correct one for verification
         rsa_key = {}
-        for key in jwks:
-            if key['kty'] == 'RSA':
-                rsa_key = jwk_to_pem(key)  # Convert JWK to PEM format
-                break
+        if key['kty'] == 'RSA':
+            rsa_key = jwk_to_pem(key)  # Convert JWK to PEM format
         
         if not rsa_key:
             print("No valid RSA key found.")
@@ -93,19 +120,21 @@ def verify_jwt(token):
     except Exception as e:
         print(f"Unable to parse token: {e}")
         return None
+    
 
 @app.route('/api/data', methods=['GET'])
+@measure_execution_time
 def get_data():
     auth_header = request.headers.get('Authorization', None)
 
     if not auth_header:
         return jsonify({"msg": "Missing Authorization Header"}), 401
-    print(auth_header)
+    #print(auth_header)
     token = auth_header.split(" ")[1]  # Extract token from "Bearer <token>"
     
     # Verify the JWT token
     claims = verify_jwt(token)
-    print(claims)
+    #print(claims)
     if not claims:
         return jsonify({"msg": "Invalid token"}), 401
     
