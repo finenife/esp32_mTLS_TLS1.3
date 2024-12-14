@@ -13,9 +13,6 @@ keycloak.init()
   .then((status) => {
     if (status === keycloak.LoginStatus.AUTHENTICATED) {
       console.log("User is authenticated");
-      console.log("Stored token:", keycloak.token); // Log the token
-      localStorage.setItem("keycloakToken", keycloak.token); // Store token
-      console.log("Stored token:", keycloak.token); // Log the token
     } else {
       console.log("User is not authenticated");
     }

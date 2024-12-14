@@ -103,26 +103,9 @@ export default {
     }
   },
   methods: {
-    handleSubmit() {
-      // Use Keycloak's login method
-      keycloak.keycloak.login({
-        username: this.username,
-        password: this.password,
-        grantType: 'password',
-      }).then(authenticated => {
-        if (authenticated) {
-          console.log('User is authenticated');
-          // Store the token
-          localStorage.setItem('keycloakToken', keycloak.keycloak.token);
-          // Optionally redirect or perform actions after successful login
-          this.$router.push('/index');
-
-        } else {
-          console.error('User is not authenticated');
-        }
-      }).catch(error => {
-        console.error('Login failed', error);
-      });
+     handleSubmit() {
+      // Handle login logic here
+      console.log('Login attempt with:', this.email, this.password)
     },
     goToRegister() {
       this.$router.push('/register');

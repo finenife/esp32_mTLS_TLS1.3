@@ -31,8 +31,9 @@ export default {
       })
         .then((authenticated) => {
           if (authenticated) {
-            console.log("Storing token");
-            localStorage.setItem("keycloakToken", keycloak.token); // Store token
+            console.log("Storing token:");
+            console.log(keycloak.token)
+            sessionStorage.setItem("keycloakToken", keycloak.token);
             resolve(LoginStatus.AUTHENTICATED);
             startTokenRefresh();
           } else {
@@ -52,11 +53,11 @@ export default {
 // Function to start the token refresh process
 function startTokenRefresh() {
   setInterval(() => {
-    keycloak.updateToken(70) // Refresh token if it's valid for less than 70 seconds
+    keycloak.updateToken(200) // Refresh token if it's valid for less than 70 seconds
       .then(refreshed => {
         if (refreshed) {
           console.log('Token refreshed');
-          localStorage.setItem('keycloakToken', keycloak.token); // Update stored token
+          sessionStorage.setItem('keycloakToken', keycloak.token); // Update stored token
         } else {
           console.warn('Token not refreshed, valid for ' + Math.round(keycloak.tokenParsed.exp + keycloak.timeSkew - new Date().getTime() / 1000) + ' seconds');
         }
@@ -66,5 +67,5 @@ function startTokenRefresh() {
         // Optionally log out user or handle session expiration
         keycloak.logout();
       });
-  }, 170000); // Refresh every 170 seconds
+  }, 8000); // Refresh every 170 seconds
 }
