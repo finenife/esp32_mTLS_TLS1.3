@@ -9,3 +9,5 @@ class Config:
     CLIENT_SECRET = os.getenv("CLIENT_SECRET")
     KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
     REALM = os.getenv("REALM")
+    AZP = os.getenv("AUTHORIZED_PRESENTER")
+    ACCESSTOKEN_TYPE = os.getenv("ACCESSTOKEN_TYPE")

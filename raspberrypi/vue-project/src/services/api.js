@@ -9,7 +9,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = sessionStorage.getItem("keycloakToken"); // Get token from local storage
-    console.log(sessionStorage.getItem("keycloakToken"));
+    //console.log(sessionStorage.getItem("keycloakToken"));
     if (token) {
       config.headers.Authorization = `Bearer ${token}`; // Set the Authorization header
     }

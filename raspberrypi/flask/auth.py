@@ -59,8 +59,12 @@ def verify_jwt(token):
             token,
             rsa_key,
             algorithms=['RS256'],
+            typ = 'Bearer',
             audience=Config.CLIENT_ID,
-            claims_options={'iss': {'essential': True, 'values': [f'http://{Config.KEYCLOAK_URL}/realms/{Config.REALM}']}}
+            claims_options={'iss': {'essential': True, 'values': [f'http://{Config.KEYCLOAK_URL}/realms/{Config.REALM}']},
+                            'azp': {'essential': True, 'values': [f'{Config.AZP}']},
+                            'typ': {'essential': True, 'values': [f'{Config.ACCESSTOKEN_TYPE}']}
+                            }
         )
         
         return decoded_token
@@ -74,22 +78,20 @@ def verify_jwt(token):
 def jwt_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        # Get the Authorization header from the request
         auth_header = request.headers.get('Authorization', None)
-        
         if not auth_header:
             return jsonify({"msg": "Missing Authorization Header"}), 401
         
-        token = auth_header.split(" ")[1]  # Extract token from "Bearer <token>"
+        # Isolate the token from the header
+        token = auth_header.split(" ")[1]
         
         # Verify the JWT token
         claims = verify_jwt(token)
-        
         if not claims:
             return jsonify({"msg": "Invalid token"}), 401
         
-        # Attach claims to the request context if needed
+        # Return the token claims to the wraoped function
         request.user_claims = claims
-        
         return f(*args, **kwargs)  # Call the original function
-    
     return decorated_function

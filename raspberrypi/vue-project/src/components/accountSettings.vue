@@ -2,7 +2,35 @@
   <div class="container mx-auto px-4 py-8">
     <h1 class="text-3xl font-bold mb-6">Account Settings</h1>
 
-    <!-- Personal Information Section -->
+    <!-- Profile Picture Section -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6 relative">
+      <h2 class="text-xl font-semibold mb-4">Profile Picture</h2>
+      <div class="flex items-center relative">
+        <img :src="currentProfilePicture" alt="Profile Picture" class="w-28 h-28 rounded-full mr-4 object-center" />
+        <button @click="showAvatarOptions" class="bottom-0 right-0 transform translate-x-1/2 translate-y-1/2 bg-white rounded-full p-1 shadow">
+          <img :src="editIcon" alt="Edit" class="w-6 h-6 z-20" />
+        </button>
+      </div>
+      
+      <!-- Avatar Options Modal -->
+      <div v-if="isAvatarOptionsVisible" class="avatar-options-modal absolute top-full left-0 mt-2 bg-white border rounded-md shadow-lg p-4 z-10">
+        <h3 class="font-semibold mb-2 relative">Select an Avatar</h3>
+        <div class="grid grid-cols-3 gap-2">
+          <img 
+            v-for="avatar in avatars" 
+            :key="avatar" 
+            :src="getAvatarPath(avatar)" 
+            alt="Avatar" 
+            @click="selectAvatar(avatar)" 
+            class="cursor-pointer w-16 h-16 rounded-full border hover:border-blue-500"
+          />
+        </div>
+        <button @click="isAvatarOptionsVisible = false" class="mt-2 text-blue-600">Close</button>
+      </div>
+    </div>
+
+    <!-- Other sections remain unchanged -->
+       <!-- Personal Information Section -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-6">
       <h2 class="text-xl font-semibold mb-4">Personal Information</h2>
       <form @submit.prevent="updateProfile">
@@ -64,14 +92,23 @@
         Delete My Account
       </button>
     </div>
-
   </div>
 </template>
 
 <script>
+import editIcon from '@/assets/edit-icon.png'; // Assuming you have an edit icon
+import avatar1 from '@/assets/1.png';
+import avatar2 from '@/assets/2.png';
+import avatar3 from '@/assets/3.png';
+import avatar4 from '@/assets/4.png';
+import avatar5 from '@/assets/5.png';
+import avatar6 from '@/assets/6.png';
+
 export default {
   data() {
     return {
+      currentProfilePicture: avatar1, // Default profile picture
+      editIcon: editIcon, 
       user: {
         name: 'John Doe',
         email: 'john.doe@example.com'
@@ -83,26 +120,50 @@ export default {
       notifications: {
         email: true,
         sms: false
-      }
+      },
+      isAvatarOptionsVisible: false,
+     avatars: [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6], // Avatar options
     };
   },
   methods: {
     updateProfile() {
-      // Logic to update the user's profile
       console.log('Profile updated:', this.user);
     },
     changePassword() {
-      // Logic to change the user's password
       console.log('Password changed:', this.passwords);
     },
     updateNotifications() {
-      // Logic to update notification preferences
       console.log('Notification preferences updated:', this.notifications);
     },
     confirmDeleteAccount() {
-      // Logic to confirm and delete the user's account
       if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
         console.log('Account deleted');
+      }
+    }, 
+    getAvatarPath(avatar) {
+      return avatar; // Dynamically load avatar images
+    },
+    showAvatarOptions() {
+      this.isAvatarOptionsVisible = true;
+    },
+    selectAvatar(avatar) {
+      this.currentProfilePicture = avatar;
+      this.isAvatarOptionsVisible = false;
+      this.storeAvatarInDatabase(avatar);
+    },
+    async storeAvatarInDatabase(avatar) {
+      try {
+        const response = await fetch('/api/store-avatar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ avatarName: `${avatar}.png` }),
+        });
+
+        if (!response.ok) throw new Error('Failed to store avatar');
+        
+        console.log('Avatar stored successfully:', avatar);
+      } catch (error) {
+        console.error('Error storing avatar:', error);
       }
     }
   }
@@ -112,5 +173,9 @@ export default {
 <style scoped>
 .container {
   max-width: 800px; /* Optional max width */
+}
+.avatar-options-modal {
+  position: absolute;
+  top: 100%; /* Adjust as needed */
 }
 </style>
