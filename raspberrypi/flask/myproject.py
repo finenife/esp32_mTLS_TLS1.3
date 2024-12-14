@@ -25,16 +25,6 @@ def measure_execution_time(func):
 app = Flask(__name__)
 CORS(app)
 
-'''oauth = OAuth(App)
-keycloak = oauth.register(
-    'keycloak',
-    client_id='flask-app',
-    client_secret='iff8ZxskbupWULbxP9Lb09kDl1ENHaCO',
-    server_metadata_url='http://localhost:8080/realms/Test/.well-known/openid-configuration',
-    client_kwargs={'scope': 'openid profile email'}
-)'''
-
-
 
 # Initialize OAuth
 oauth = OAuth(app)
