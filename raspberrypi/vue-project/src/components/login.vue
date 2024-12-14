@@ -24,17 +24,17 @@
         <input type="hidden" name="remember" value="true" />
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
-            <label for="email-address" class="sr-only">Email address</label>
-            <input
-              id="email-address"
-              name="email"
-              type="email"
-              autocomplete="email"
-              required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Email address"
-              v-model="email"
-            />
+            <label for="username" class="sr-only">Username</label>
+              <input
+                id="username"
+                name="username"
+                type="text" 
+                autocomplete="username" 
+                required
+                class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Username"
+                v-model="username" 
+              />
           </div>
           <div>
             <label for="password" class="sr-only">Password</label>
@@ -93,6 +93,8 @@
 </template>
 
 <script>
+import keycloak from '../plugins/keycloak';
+
 export default {
   data() {
     return {
@@ -102,11 +104,28 @@ export default {
   },
   methods: {
     handleSubmit() {
-      // Handle login logic here
-      console.log('Login attempt with:', this.email, this.password)
+      // Use Keycloak's login method
+      keycloak.keycloak.login({
+        username: this.username,
+        password: this.password,
+        grantType: 'password',
+      }).then(authenticated => {
+        if (authenticated) {
+          console.log('User is authenticated');
+          // Store the token
+          localStorage.setItem('keycloakToken', keycloak.keycloak.token);
+          // Optionally redirect or perform actions after successful login
+          this.$router.push('/index');
+
+        } else {
+          console.error('User is not authenticated');
+        }
+      }).catch(error => {
+        console.error('Login failed', error);
+      });
     },
     goToRegister() {
-      this.$router.push('/register')
+      this.$router.push('/register');
     }
   },
 }

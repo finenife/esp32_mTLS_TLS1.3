@@ -2,6 +2,16 @@
   <div class="container mx-auto px-4 py-8">
     <h1 class="text-3xl font-bold mb-8">Admin Dashboard</h1>
 
+    <div class="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
+    <h1 class="text-3xl font-bold mb-4 text-blue-600">{{ message }}</h1>
+    <button 
+      @click="fetchData" 
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+    >
+      Fetch Data
+    </button>
+  </div>
+
      <ActivePlayersList :players="activePlayers" />
 
      <DeviceStatus :devices="devices" />
@@ -15,6 +25,23 @@
     <ServerStatus :serverFeatures="serverFeatures" />
   </div>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+import api from '../services/api';
+
+const message = ref('Hello from Vue!')
+
+const fetchData = async () => {
+  try {
+    const response = await api.get('/data') //send a request to the backend using Api servicer to wrap headers and tokens on all requests
+    message.value = response.data.message
+  } catch (error) {
+    console.error('Error fetching data:', error)
+  }
+}
+</script>
+
 
 <script>
 import ActivePlayersList from './adminpagecomps/ActivePlayersList.vue';
